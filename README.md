@@ -4,21 +4,24 @@ Small program to perform FFTs to population.dat files
 ## File structure
 ### Population files
 
-Of the form (without headers, only the numeric values).
-
 | time  |  lvl0 |  lvl1 |  ...  |
 |:-----:|:-----:|:-----:|:-----:|
 |  t_0  | p_1_0 | p_2_0 |  ...  |
 |  t_1  | p_1_1 | p_2_1 |  ...  |
 |  ...  |  ...  |  ...  |  ...  |
 
+Without headers, only the numeric values, see _population.dat_.
+
 ### Levels files
+
 ```
 3	,	j=1
 13	,	j=3
 31	,	j=5
 ...
 ```
+
+Of the form (see _levels.csv_):
 
 ## Usage
 Execute with (python v3 with scipy and matplolib):
