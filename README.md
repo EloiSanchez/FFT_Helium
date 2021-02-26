@@ -1,5 +1,5 @@
 # FFT_pob
-Small program to perform FFTs to population.dat files
+Small program to perform FFTs to _poblacions.dat_ files
 
 ## File structure
 ### Population files
@@ -10,7 +10,7 @@ Small program to perform FFTs to population.dat files
 |  t_1  | p_1_1 | p_2_1 |  ...  |
 |  ...  |  ...  |  ...  |  ...  |
 
-Without headers, only the numeric values, see _population.dat_.
+Without headers, only the numeric values, see _poblacions.dat_.
 
 ### Levels files
 
