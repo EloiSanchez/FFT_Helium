@@ -21,7 +21,7 @@ Without headers, only the numeric values, see _population.dat_.
 ...
 ```
 
-Of the form (see _levels.csv_):
+See _levels.csv_.
 
 ## Usage
 Execute with (python v3 with scipy and matplolib):
