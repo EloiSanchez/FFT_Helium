@@ -30,4 +30,4 @@ Execute with (python v3 with scipy and matplolib):
 python fft_poblacio.py /path/poupulation_input_file /path/levels_file
 ```
 
-It will show a plot of the populations determined in the first column of the _levels_ file and their respective labels from the second column of _levels_ (coma separated) (Example in results _Ex_pre_pob.png_. Then it will ask for `t_0` and `t_f`, and the `output_name`, which will be saved in the folder `Results/`. Example is _HCl_1_3_5.png_.
+It will show a plot of the populations determined in the first column of the _levels_ file and their respective labels from the second column of _levels_ (coma separated) (Example in results _Ex_pre_pob.png_. Then it will ask for `t_0` and `t_f`, and the `output_name`, which will be saved in the folder `Results/`. Example is _DCl_1_3_5.png_.
