@@ -57,6 +57,9 @@ pobl_t = np.array(pobl_t)
 plt.style.use("seaborn-colorblind")
 rcParams['font.family'] = "Arial"
 rcParams['font.size'] = 12
+rcParams['axes.grid'] = True
+rcParams['legend.fontsize'] = 10
+rcParams['axes.titleweight'] = "normal"
 
 # Plot of populations chosen
 fig1 = plt.figure()
@@ -110,6 +113,7 @@ for i in range(len(times)):
 for ax in axs:
     ax.legend(fontsize=8)
     ax.set_xlim((0, np.max(grids_he[0])))
+    ax.set_ylim(0)
     ax.set_ylabel("Intensity (A.U)")
     ax.set_xlabel(r"Frequency (ps$^{-1}$)")
 
