@@ -28,9 +28,6 @@ for line in lines:
         pdenpar = int(line.split("=")[1][:-2])
 # We obtained delta_t, pener and pdenpar to get the correct times fromt he density outputs
 
-fit_int = (int(80//(pener*delta_t)) + 1, int(100//(pener*delta_t)) + 2)
-
-
 # Indices to analyse and respective labels
 with open(sys.argv[2], "r") as fil:
     lines = fil.readlines()
@@ -79,8 +76,20 @@ for interval in times_s:
 print(times)
 
 # We fit the data to a sigmoid to improve the results of the FFT
-fit = fit_sigmoid(t_grid[fit_int[0]:fit_int[1]], pobl_t[fit_int[0]:fit_int[1],0])
-pobl_t[fit_int[0]:fit_int[1],0] = pobl_t[fit_int[0]:fit_int[1],0] - fit
+inp = input("Do you want to fit the data to a sigmoid? (y/n) ")
+if inp.capitalize().startswith("Y"):
+    fit_interval = [float(s) for s in input("Introduce the interval for the fit as t_0:t_f. ").split(":")]
+
+    print(fit_interval)
+
+    fit_interval = (int(fit_interval[0]//(pener*delta_t)) + 1, int(fit_interval[1]//(pener*delta_t)) + 2)
+
+    print(fit_interval)
+
+    fit = fit_sigmoid(t_grid[fit_interval[0]:fit_interval[1]], pobl_t[fit_interval[0]:fit_interval[1],0])
+    pobl_t[fit_interval[0]:fit_interval[1],0] = pobl_t[fit_interval[0]:fit_interval[1],0] - fit
+else:
+    print("Skipping the fit")
 
 # Now we get the results of the fft for populations and He density
 intensities_pop, grids_pop = fft_pob(prefix, times, pobl_t, t_grid, fft_index)
