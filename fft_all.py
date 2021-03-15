@@ -7,11 +7,21 @@ from fft_Heli import fft_he
 from fit_sigmoid import fit_sigmoid
 
 # Input check
-if len(sys.argv) != 3:
-    print('ERROR: You must call the program with "python fft_poblacio input_path levels_path"')
+if len(sys.argv) != 4:
+    print('ERROR: You must call the program with "python fft_poblacio input_path levels_path is_den(T/F)"')
     quit()
 
 fft_index = 0
+
+# Check whether to read den.__.dat or tall.__.dat files
+if sys.argv[3].capitalize().startswith("T"):
+    is_den = True
+elif sys.argv[3].capitalize().startswith("F"):
+    is_den = False
+else:
+    print("\nIf reading from format den.__.dat, is_den = T")
+    print("If reading from format tall.__.dat, is_den = F")
+    quit("ERROR: Enter a proper character for is_den")
 
 # Get some variables from DFT4He3dt.namelist.read
 prefix = sys.argv[1]
@@ -21,12 +31,13 @@ with open(prefix + "/DFT4He3dt.namelist.read", "r") as fil:
 for line in lines:
     if line.strip().startswith("DELTAT"):
         delta_t = float(line.split("=")[1][:-2])
-        print(delta_t)
     elif line.strip().startswith("PENER"):
         pener = int(line.split("=")[1][:-2])
     elif line.strip().startswith("PDENPAR"):
         pdenpar = int(line.split("=")[1][:-2])
 # We obtained delta_t, pener and pdenpar to get the correct times fromt he density outputs
+print("\nParameters read from simulation folder:")
+print("dt = {}\npener = {}\npdenpar = {}\n".format(delta_t, pener, pdenpar))
 
 # Indices to analyse and respective labels
 with open(sys.argv[2], "r") as fil:
@@ -72,15 +83,17 @@ plt.show()
 
 # Now we get the time intervals we want to plot
 times = []
-times_s = input("Introduce intervals t0:tf >> ").strip().split(" ")
+times_s = input("\nIntroduce intervals t0:tf >> ").strip().split(" ")
 for interval in times_s:
     t0, tf = interval.split(":")
     times.append((float(t0),float(tf)))
-print(times)
+
+print("\nThe time intervals {} ps are going to be used.",format(times))
 
 # We fit the data to a sigmoid to improve the results of the FFT
-inp = input("Do you want to fit the data to a sigmoid? (y/n) ")
+inp = input("\nDo you want to fit the data to a sigmoid? (y/n) ")
 if inp.capitalize().startswith("Y"):
+    print("\n=== Starting fit for population ===\n")
     fit_interval = [float(s) for s in input("Introduce the interval for the fit as t0:tf >> ").split(":")]
     fit_interval = (int(fit_interval[0]//(pener*delta_t)) + 1, int(fit_interval[1]//(pener*delta_t)) + 2)
     fit = fit_sigmoid(t_grid[fit_interval[0]:fit_interval[1]], pobl_t[fit_interval[0]:fit_interval[1],0])
@@ -90,9 +103,10 @@ else:
 
 # Now we get the results of the fft for populations and He density
 intensities_pop, grids_pop = fft_pob(prefix, times, pobl_t, t_grid, fft_index)
-intensities_he_z, intensitites_he_x, grids_he = fft_he(prefix, times, delta_t, pdenpar)
+intensities_he_z, intensitites_he_x, grids_he = fft_he(prefix, times, delta_t, pdenpar, pener, is_den)
 
 # From here we make the plots of the ffts
+print("Start the final plots")
 fig2 = plt.figure(figsize=(6.4*1.2,4.8*1.5))
 ax1 = fig2.add_subplot(211)
 
