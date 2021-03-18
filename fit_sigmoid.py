@@ -13,10 +13,13 @@ def fit_sigmoid(x, y):
     ax = fig.add_subplot()
     ax.plot(x, y, label="data")
     ax.plot(x, sigmoid(x, *popt), label="fit")
+    ax.set_title("Fit with sigmoid in the interval ({},{}) ps".format(x[0],x[-1]))
 
     print("\nFitted to f(t) = 1 - (1 / (1 + exp(-a * (x - b))")
     print("a = {}, b = {}\n".format(popt[0], popt[1]))
 
     ax.legend()
+    ax.set_xlabel("Time (ps)")
     plt.show()
-    return sigmoid(x, *popt)
+    return sigmoid(x, *popt), fig
+
