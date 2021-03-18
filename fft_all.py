@@ -95,6 +95,7 @@ print("\nThe time intervals {} ps are going to be used.",format(times))
 # We fit the data to a sigmoid to improve the results of the FFT
 inp = input("\nDo you want to fit the data to a sigmoid? (y/n) ")
 if inp.capitalize().startswith("Y"):
+    print("\n=== Starting fit for population ===\n")
     fit_interval = [float(s) for s in input("Introduce the interval for the fit as t0:tf >> ").split(":")]
     fit_interval = (int(fit_interval[0]//(pener*delta_t)) + 1, int(fit_interval[1]//(pener*delta_t)) + 2)
     fit, fig_fit = fit_sigmoid(t_grid[fit_interval[0]:fit_interval[1]], pobl_t[fit_interval[0]:fit_interval[1],0])

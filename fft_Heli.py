@@ -26,7 +26,6 @@ def fft_he(prefix, times, delta_t, pdenpar, pener, is_den):
 
     fig = plt.figure()
     ax = fig.add_subplot()
-
     freqs_z, freqs_x, freqs_grids = [], [], []
     for interval in times:
         t_0, t_f = interval
@@ -83,7 +82,6 @@ def fft_he(prefix, times, delta_t, pdenpar, pener, is_den):
             for name in files_Z:
                 with open(prefix + name, "r") as fil:
                     lines = fil.readlines()
-
                 den_z = []
                 for line in lines:
                     x, z, den = [float(s) for s in line.split()]
@@ -98,7 +96,6 @@ def fft_he(prefix, times, delta_t, pdenpar, pener, is_den):
             for line in lines:
                 x, den = [float(s) for s in line.split()]
                 grid_x.append(x)
-
             all_x = []
             for name in files_X:
                 with open(prefix + name, "r") as fil:
@@ -115,7 +112,6 @@ def fft_he(prefix, times, delta_t, pdenpar, pener, is_den):
             for name in files_Z:
                 with open(prefix + name, "r") as fil:
                     lines = fil.readlines()
-
                 den_z = []
                 for line in lines:
                     z, den = [float(s) for s in line.split()]
