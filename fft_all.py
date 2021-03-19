@@ -7,6 +7,7 @@ from fft_poblacio import fft_pob
 from fft_Heli import fft_he
 from fit_sigmoid import fit_sigmoid
 from save_figures import save_figures
+from save_data import save_data
 
 
 # Input check
@@ -148,13 +149,14 @@ for ax in axs:
 plt.tight_layout()
 plt.show()
 
-if input("\nDo you want to save the plots? (y/n) ").strip().capitalize().startswith("Y"):
+if input("\nDo you want to save the results? (y/n) ").strip().capitalize().startswith("Y"):
     if input("Resize x axis of final plot? (y/n) ").strip().capitalize().startswith("Y"):
-        new_x0, new_xf = [float(s) for s in input("Introduce new interval as x0:xf").strip().split(":")]
+        new_x0, new_xf = [float(s) for s in input("Introduce new interval as x0:xf >>").strip().split(":")]
         for ax in axs:
             ax.set_xlim((new_x0, new_xf))
-    logging.info("Saving figures")
-    save_figures(fig_all_pop, fig_fft_pob, fig_fit, fig_fft_he, fig_final)
+    logging.info("Saving results")
+    directory = save_figures(fig_all_pop, fig_fft_pob, fig_fit, fig_fft_he, fig_final)
+    save_data(directory, intensities_pop, grids_pop, intensities_he_z, grids_he)
 else:
-    logging.info("Not saving figures")
+    logging.info("Not saving results")
 
