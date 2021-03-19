@@ -21,8 +21,9 @@ def fft_he(prefix, times, delta_t, pdenpar, pener, is_den):
     import numpy as np
     import matplotlib.pyplot as plt
     from scipy.fft import rfft, rfftfreq
+    import logging
 
-    print("\n=== Starting Helium FFTs ===\n")
+    logging.info("\n=== Starting Helium FFTs ===\n")
 
     fig = plt.figure()
     ax = fig.add_subplot()
@@ -150,7 +151,7 @@ def fft_he(prefix, times, delta_t, pdenpar, pener, is_den):
         freqs_x.append(rfft(max_x))
         freqs_grids.append(rfftfreq(N_t_grid, dt_grid))
 
-        print("For ({}, {}) ps, N = {}.\n".format(t_0, t_f, N_t_grid))
+        logging.info("For ({}, {}) ps, N = {}.\n".format(t_0, t_f, N_t_grid))
 
     ax.legend(fontsize=8)
     ax.set_title("First solvation layer maximum evolution")

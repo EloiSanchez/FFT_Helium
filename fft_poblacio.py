@@ -3,8 +3,9 @@ def fft_pob(prefix, times, pobl_t, t_grid, index):
     import numpy as np
     from scipy.fft import rfft, rfftfreq
     import matplotlib.pyplot as plt
+    import logging
 
-    print("\n=== Starting population FFTs ===\n")
+    logging.info("\n=== Starting population FFTs ===\n")
 
     fig = plt.figure()
     freqs, freqs_grids = [], []
@@ -25,7 +26,7 @@ def fft_pob(prefix, times, pobl_t, t_grid, index):
         # Substract means from populations
         pobl_util = pobl_util - np.mean(pobl_util, axis=0)
 
-        print("For ({}, {}) ps, N = {}.\n".format(t_0, t_f, N_samples))
+        logging.info("For ({}, {}) ps, N = {}.\n".format(t_0, t_f, N_samples))
 
         # Perform FFT and save in freqs
         freqs_grids.append(rfftfreq(N_samples, dt)[:N_samples//2 + 1])

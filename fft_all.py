@@ -2,16 +2,27 @@ from matplotlib import rcParams
 import matplotlib.pyplot as plt
 import numpy as np
 import sys
+import logging
 from fft_poblacio import fft_pob
 from fft_Heli import fft_he
 from fit_sigmoid import fit_sigmoid
 from save_figures import save_figures
+
 
 # Input check
 if len(sys.argv) != 4:
     print('ERROR: You must call the program with "python fft_poblacio input_path levels_path is_den(T/F)"')
     quit()
 
+# Configuring logging to write to console and file at the same time
+logging.basicConfig(level=logging.INFO,
+                    filename='FFT_out.tmp',
+                    filemode='w')
+console = logging.StreamHandler()
+console.setLevel(logging.INFO)
+logging.getLogger('').addHandler(console)
+
+# Which level of the population should we work with for the FFT
 fft_index = 0
 
 # Check whether to read den.__.dat or tall.__.dat files
@@ -20,9 +31,10 @@ if sys.argv[3].capitalize().startswith("T"):
 elif sys.argv[3].capitalize().startswith("F"):
     is_den = False
 else:
-    print("\nIf reading from format den.__.dat, is_den = T")
-    print("If reading from format tall.__.dat, is_den = F")
-    quit("ERROR: Enter a proper character for is_den")
+    logging.info("\nIf reading from format den.__.dat, is_den = T")
+    logging.info("If reading from format tall.__.dat, is_den = F")
+    logging.error("ERROR: Enter a proper character for is_den")
+    quit()
 
 # Get some variables from DFT4He3dt.namelist.read
 prefix = sys.argv[1]
@@ -37,8 +49,8 @@ for line in lines:
     elif line.strip().startswith("PDENPAR"):
         pdenpar = int(line.split("=")[1][:-2])
 # We obtained delta_t, pener and pdenpar to get the correct times fromt he density outputs
-print("\nParameters read from simulation folder:")
-print("dt = {}\npener = {}\npdenpar = {}\nread_talls = {}\n".format(delta_t, pener, pdenpar, not is_den))
+logging.info("\nParameters read from simulation folder:")
+logging.info("dt = {}\npener = {}\npdenpar = {}\nread_talls = {}\n".format(delta_t, pener, pdenpar, not is_den))
 
 # Indices to analyse and respective labels
 with open(sys.argv[2], "r") as fil:
@@ -90,25 +102,25 @@ for interval in times_s:
     t0, tf = interval.split(":")
     times.append((float(t0),float(tf)))
 
-print("\nThe time intervals {} ps are going to be used.",format(times))
+logging.info("\nThe time intervals {} ps are going to be used.".format(times))
 
 # We fit the data to a sigmoid to improve the results of the FFT
 inp = input("\nDo you want to fit the data to a sigmoid? (y/n) ")
 if inp.capitalize().startswith("Y"):
-    print("\n=== Starting fit for population ===\n")
+    logging.info("\n=== Starting fit for population ===\n")
     fit_interval = [float(s) for s in input("Introduce the interval for the fit as t0:tf >> ").split(":")]
     fit_interval = (int(fit_interval[0]//(pener*delta_t)) + 1, int(fit_interval[1]//(pener*delta_t)) + 2)
     fit, fig_fit = fit_sigmoid(t_grid[fit_interval[0]:fit_interval[1]], pobl_t[fit_interval[0]:fit_interval[1],0])
     pobl_t[fit_interval[0]:fit_interval[1],0] = pobl_t[fit_interval[0]:fit_interval[1],0] - fit
 else:
-    print("Skipping the fit")
+    logging.info("Skipping the fit")
 
 # Now we get the results of the fft for populations and He density
 intensities_pop, grids_pop, fig_fft_pob = fft_pob(prefix, times, pobl_t, t_grid, fft_index)
 intensities_he_z, intensitites_he_x, grids_he, fig_fft_he = fft_he(prefix, times, delta_t, pdenpar, pener, is_den)
 
 # From here we make the plots of the ffts
-print("Start the final plots")
+logging.info("Start the final plots")
 fig_final = plt.figure(figsize=(6.4*1.2,4.8*1.5))
 ax2 = fig_final.add_subplot(211)
 
@@ -141,8 +153,8 @@ if input("\nDo you want to save the plots? (y/n) ").strip().capitalize().startsw
         new_x0, new_xf = [float(s) for s in input("Introduce new interval as x0:xf").strip().split(":")]
         for ax in axs:
             ax.set_xlim((new_x0, new_xf))
-    print("Saving figures")
+    logging.info("Saving figures")
     save_figures(fig_all_pop, fig_fft_pob, fig_fit, fig_fft_he, fig_final)
 else:
-    print("Not saving figures")
+    logging.info("Not saving figures")
 
