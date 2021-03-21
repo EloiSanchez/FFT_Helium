@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import sys
 import logging
+import os
 from fft_poblacio import fft_pob
 from fft_Heli import fft_he
 from fit_sigmoid import fit_sigmoid
@@ -69,14 +70,14 @@ for line in lines:
 with open(sys.argv[1] + "/poblacions.dat", "r") as fil:
     lines = fil.readlines()
 
-# Parse information. Populations of interest saved in pobl_t
+# Parse information. Populations of interest saved in pobl_t_raw
 t_grid = []
-pobl_t = []
+pobl_t_raw = []
 for line in lines:
     aux = [float(s) for s in line.split()[0:-1]]
     t_grid.append(aux[0])
-    pobl_t.append([aux[i] for i in indices])
-pobl_t = np.array(pobl_t)
+    pobl_t_raw.append([aux[i] for i in indices])
+pobl_t_raw = np.array(pobl_t_raw)
 
 # Define some standards for all plots
 plt.style.use("seaborn-colorblind")
@@ -90,7 +91,7 @@ rcParams['axes.titleweight'] = "normal"
 fig_all_pop = plt.figure()
 ax1 = fig_all_pop.add_subplot()
 for i in range(len(indices)):
-    ax1.plot(t_grid, pobl_t[:,i], label=labels[i])
+    ax1.plot(t_grid, pobl_t_raw[:,i], label=labels[i])
 ax1.legend(fontsize=10)
 ax1.set_title("All the populations read from results diretory")
 ax1.set_xlabel("Time (ps)")
@@ -106,21 +107,22 @@ for interval in times_s:
 logging.info("\nThe time intervals {} ps are going to be used.".format(times))
 
 # We fit the data to a sigmoid to improve the results of the FFT
+pobl_t = pobl_t_raw.copy()
 inp = input("\nDo you want to fit the data to a sigmoid? (y/n) ")
 if inp.capitalize().startswith("Y"):
     logging.info("\n=== Starting fit for population ===\n")
     fit_interval = [float(s) for s in input("Introduce the interval for the fit as t0:tf >> ").split(":")]
     fit_interval = (int(fit_interval[0]//(pener*delta_t)) + 1, int(fit_interval[1]//(pener*delta_t)) + 2)
-    fit, fig_fit = fit_sigmoid(t_grid[fit_interval[0]:fit_interval[1]], pobl_t[fit_interval[0]:fit_interval[1],0])
-    pobl_t[fit_interval[0]:fit_interval[1],0] = pobl_t[fit_interval[0]:fit_interval[1],0] - fit
+    fit, fig_fit = fit_sigmoid(t_grid[fit_interval[0]:fit_interval[1]], pobl_t_raw[fit_interval[0]:fit_interval[1],0])
+    pobl_t[fit_interval[0]:fit_interval[1],0] = pobl_t_raw[fit_interval[0]:fit_interval[1],0] - fit
 else:
     logging.info("Skipping the fit")
 
 # Now we get the results of the fft for populations and He density
 intensities_pop, grids_pop, fig_fft_pob = fft_pob(prefix, times, pobl_t, t_grid, fft_index)
-intensities_he_z, intensitites_he_x, grids_he, fig_fft_he = fft_he(prefix, times, delta_t, pdenpar, pener, is_den)
+intensities_he_z, intensitites_he_x, grids_he, fig_fft_he, he_info = fft_he(prefix, times, t_grid, delta_t, pdenpar, pener, is_den)
 
-# From here we make the plots of the ffts
+# Wwe make the plots of the ffts
 logging.info("Start the final plots")
 fig_final = plt.figure(figsize=(6.4*1.2,4.8*1.5))
 ax2 = fig_final.add_subplot(211)
@@ -149,14 +151,22 @@ for ax in axs:
 plt.tight_layout()
 plt.show()
 
+# Save results or delete temporary files
 if input("\nDo you want to save the results? (y/n) ").strip().capitalize().startswith("Y"):
     if input("Resize x axis of final plot? (y/n) ").strip().capitalize().startswith("Y"):
-        new_x0, new_xf = [float(s) for s in input("Introduce new interval as x0:xf >>").strip().split(":")]
+        new_x0, new_xf = [float(s) for s in input("Introduce new interval as x0:xf >> ").strip().split(":")]
         for ax in axs:
             ax.set_xlim((new_x0, new_xf))
     logging.info("Saving results")
-    directory = save_figures(fig_all_pop, fig_fft_pob, fig_fit, fig_fft_he, fig_final)
-    save_data(directory, intensities_pop, grids_pop, intensities_he_z, grids_he)
+    directory = save_figures(
+        fig_all_pop, fig_fft_pob, fig_fit, fig_fft_he, fig_final
+        )
+    save_data(
+        directory, intensities_pop, grids_pop, intensities_he_z, grids_he,
+        pobl_t, t_grid, prefix, he_info
+        )
 else:
     logging.info("Not saving results")
+
+os.system('rm *.tmp')
 
