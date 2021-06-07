@@ -9,6 +9,7 @@ def fft_pob(prefix, times, pobl_t, t_grid, index):
 
     fig = plt.figure()
     freqs, freqs_grids = [], []
+    ax = fig.add_subplot()
     for interval in times:
         t_0, t_f = interval
 
@@ -20,7 +21,6 @@ def fft_pob(prefix, times, pobl_t, t_grid, index):
         dt = t_util[1] - t_util[0]
         pobl_util = pobl_t[t_lim_0:t_lim_f,:]
 
-        ax = fig.add_subplot()
         ax.plot(t_util, pobl_util[:,index])
 
         # Substract means from populations
