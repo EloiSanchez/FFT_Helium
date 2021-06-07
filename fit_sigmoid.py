@@ -8,7 +8,7 @@ def fit_sigmoid(x, y):
     import matplotlib.pyplot as plt
     import logging
 
-    popt, pcov = curve_fit(sigmoid, x, y, p0=(0.1, 0.5 * (x[-1] + x[0])), bounds=(0.0001, [100, 1000]))
+    popt, pcov = curve_fit(sigmoid, x, y, p0=(1, 0.5 * (x[-1] + x[0])), bounds=(0.0001, [100, 1000]))
 
     fig = plt.figure()
     ax = fig.add_subplot()
