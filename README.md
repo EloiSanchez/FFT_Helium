@@ -59,4 +59,11 @@ Currently performs the FFT of the first level indicated in _levels_fft.csv_.
     - Manage I/O and for numerical and logging results.
 ___
 
-## Author: Eloi Sanchez
+## Author and Contact
+Author: Eloi Sanchez Ambros
+
+Contact: eloisanchez16@gmail.com or esancham21@alumnes.ub.edu
+
+## Other Programs for the Group
+- [Grid Construction](https://github.com/EloiSanchez/Grid_Construction): To generate helium nanodroplet grids of any size and density
+- [He Movies](https://github.com/EloiSanchez/He_Movies): To generate movies of the helium density from the dynamic simulations results.
