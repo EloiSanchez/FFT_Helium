@@ -65,5 +65,5 @@ Author: Eloi Sanchez Ambros
 Contact: eloisanchez16@gmail.com or esancham21@alumnes.ub.edu
 
 ## Other Programs for the Group
-- [Grid Construction](https://github.com/EloiSanchez/Grid_Construction): To generate helium nanodroplet grids of any size and density
+- [Grid Construction](https://github.com/EloiSanchez/Grid_Construction): To generate helium nanodroplet grids of any size and density.
 - [He Movies](https://github.com/EloiSanchez/He_Movies): To generate movies of the helium density from the dynamic simulations results.
